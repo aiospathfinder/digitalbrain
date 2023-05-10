@@ -16,7 +16,7 @@ COPY requirements.txt .
 RUN pip3 install -r requirements.txt
 
 # Expose port 8000
-EXPOSE 8000
+EXPOSE 3000
 
 # Run the application
 ENTRYPOINT ["python3", "manage.py", "runserver"]
