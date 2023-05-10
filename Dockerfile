@@ -56,6 +56,6 @@ RUN export PATH="/root/.local/bin:$PATH" && \
 EXPOSE 3000
 
 # Set the entrypoint
-ENTRYPOINT ["python", "manage.py","runserver"]
+ENTRYPOINT ["python", "manage.py","runserver", "0.0.0.0:3000"]
 
 
