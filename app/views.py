@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from .functions import fnBuildBrain, fnAskQuestion, handle_uploaded_file
 # Create your views here.
+answer = ""
 def fnBuildSecondBrain(request):
     if request.method == "POST":
         try:
@@ -16,6 +17,7 @@ def fnBuildSecondBrain(request):
             return render(request, "index.html", context={"error":"You didn't upload file", "api_key":api_key})
 
         input_text = handle_uploaded_file(f)
+        print("input_text", input_text)
         result = fnBuildBrain(api_key, input_text)
         if result == False:
             return render(request, "index.html", context={"error":"This API Key can't work now. Please use other api key"})
@@ -23,6 +25,7 @@ def fnBuildSecondBrain(request):
     return JsonResponse({"response":"success"})
 
 def fnQA(request):
+    global answer
     if request.method == "POST":    
         chunks = 10000
         try:
@@ -42,8 +45,19 @@ def fnQA(request):
         except:
             return render(request, "index.html", context={"error":"Please input question", "api_key":api_key})
         answer = fnAskQuestion(api_key, question, chunk_size=chunks)
-        if answer == False:
+        if answer == "":
             return render(request, "index.html", context={"error":"This API Key can't work now. Please use other api key"})
- 
         return render(request, "index.html", context={"result":answer, "api_key":api_key, "question":question, "chunk":chunks})
     return JsonResponse({"response": "success"})
+
+def download_text(request):
+    global answer
+    try:
+        # Create the HttpResponse object with the generated text file
+        response = HttpResponse(answer, content_type='text/plain')
+        response['Content-Disposition'] = 'attachment; filename="generated_text.txt"'
+        answer = ""
+    except:
+        response = HttpResponse(generated_text, content_type='text/plain')
+        response['Content-Disposition'] = 'attachment; filename="blank.txt"'
+    return response
