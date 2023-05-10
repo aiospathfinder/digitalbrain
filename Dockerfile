@@ -1,3 +1,4 @@
+#Docker
 # Use an official Python base image from the Docker Hub
 FROM python:3.10-slim
 
@@ -56,3 +57,5 @@ EXPOSE 3000
 
 # Set the entrypoint
 ENTRYPOINT ["python", "manage.py","runserver"]
+
+
