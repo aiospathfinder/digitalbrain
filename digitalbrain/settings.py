@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-b^vkps*75g02y8vrlg-g&&07ce5#r4j$zk22wh&ho)v3)aj1$n
 DEBUG = False
 
 CSRF_TRUSTED_ORIGINS = ['https://aios-universal-brain-c4unnrrr4a-uc.a.run.app/', 'https://aios-universal-brain-c4unnrrr4a-uc.a.run.app/']
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["https://aios-universal-brain-c4unnrrr4a-uc.a.run.app"]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Application definition
