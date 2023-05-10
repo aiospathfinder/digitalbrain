@@ -32,7 +32,7 @@ ENV PIP_NO_CACHE_DIR=yes \
 # WORKDIR /home/appuser
 # RUN chown appuser:appuser /home/appuser
 # USER appuser:appuser
-ENV APP_HOME /app/ui
+ENV APP_HOME /app/
 WORKDIR $APP_HOME
 
 # # Set the working directory
