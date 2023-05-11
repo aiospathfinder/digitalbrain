@@ -7,7 +7,7 @@ RUN apt-get update && \
     apt-get install -y python3-pip
 
 # Set working directory
-ENV APP_HOME /project
+ENV APP_HOME /project/
 WORKDIR $APP_HOME
 COPY . /project/
 
@@ -20,10 +20,10 @@ RUN pip3 install -r requirements.txt
 RUN export PATH="/root/.local/bin:$PATH" && \
     python manage.py migrate
 RUN export PATH="/root/.local/bin:$PATH" && \
-    python manage.py collectstatic 
+    python manage.py collectstatic
 
 # Expose the port
 EXPOSE 3000
 
-# Run the application
-ENTRYPOINT ["nohup", "python3", "manage.py", "runserver", "0.0.0.0:3000"]
+# Set the entrypoint
+ENTRYPOINT ["python", "manage.py","runserver", "0.0.0.0:3000"]
