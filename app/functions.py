@@ -5,18 +5,22 @@ import numpy as np
 from pdfreader import SimplePDFViewer, PDFDocument
 import io
 import pdfreader
+import pandas as pd
 import docx
+import csv
 
 def gpt3_embedding(content, engine='text-embedding-ada-002'):
-    response = openai.Embedding.create(input=content,engine=engine)
+    response = openai.Embedding.create(input=content, engine=engine)
     vector = response['data'][0]['embedding']
     return vector
+
 
 def similarity(v1, v2):
     # Calculate the dot product of two vectors - The dot product of two vectors is a scalar value that indicates how similar the two vectors are. The higher the dot product value, the more similar the two vectors are. The function returns this value as the result. 
     return np.dot(v1, v2)
 
-def search_brain(text, data, count=10): 
+
+def search_brain(text, data, count=10):
     # Generate the embedding for the input text
     vector = gpt3_embedding(text)
 
@@ -36,53 +40,57 @@ def search_brain(text, data, count=10):
     # Return the first count items of the sorted list
     return ordered[0:count]
 
-#GPT-3 Function        
-def gpt_3 (prompt):
+
+# GPT-3 Function
+def gpt_3(prompt):
     response = openai.Completion.create(
-    model="text-davinci-003",
-    prompt=prompt,
-    temperature=0,
-    max_tokens=1000,
-    top_p=1,
-    frequency_penalty=0,
-    presence_penalty=0
+        model="text-davinci-003",
+        prompt=prompt,
+        temperature=0,
+        max_tokens=1000,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
     )
     text = response['choices'][0]['text'].strip()
     return text
+
 
 def open_file(filepath):
     with open(filepath, 'r', encoding='utf-8') as infile:
         return infile.read()
 
+
 def fnBuildBrain(api_key, text_data):
     try:
         openai.api_key = api_key
         chunks = textwrap.wrap(text_data, 2700)
-        
+
         # Initialize an empty list to store the processed information
         result = list()
-        
+
         # Loop through each chunk and process its contents
         for chunk in chunks:
             # Get the embedding of the chunk using the gpt3_embedding function
-            embedding = gpt3_embedding(chunk.encode(encoding='ASCII',errors='ignore').decode())
-            
+            embedding = gpt3_embedding(chunk.encode(encoding='ASCII', errors='ignore').decode())
+
             # Store the chunk and its embedding in a dictionary
             info = {'content': chunk, 'vector': embedding}
-            
+
             # Print the processed information for each chunk
-            print(info, '\n\n\n')
-            
+            # print(info, '\n\n\n')
+
             # Append the processed information to the result list
             result.append(info)
-        
+
         # Write the result list as a JSON file
-        #In this case, indent=2 means that each level in the JSON data will be indented by 2 spaces. This makes the output easier to read, as the structure of the JSON data is clearly defined.
-        print(result)
+        # In this case, indent=2 means that each level in the JSON data will be indented by 2 spaces. This makes the output easier to read, as the structure of the JSON data is clearly defined.
+        # print(result)
         with open('secondbrain.json', 'w') as outfile:
             json.dump(result, outfile, indent=2)
     except:
         return False
+
 
 def fnAskQuestion(api_key, question, chunk_size=10000):
     try:
@@ -105,7 +113,7 @@ def fnAskQuestion(api_key, question, chunk_size=10000):
 
             # Add the answer to the list of answers
             answers.append(answer)
-                # Join all the answers together into a single string
+            # Join all the answers together into a single string
         all_answers = '\n\n'.join(answers)
 
         # Split the answers into smaller chunks, if necessary
@@ -127,7 +135,8 @@ def fnAskQuestion(api_key, question, chunk_size=10000):
         output_result = '\n\n=========\n\n\n\n'.join(end)
         return output_result
     except:
-        return False
+        return ""
+
 
 def handle_uploaded_file(f):
     filename = f.name
@@ -151,6 +160,23 @@ def handle_uploaded_file(f):
         document = docx.Document(f)
         full_text = ""
         for para in document.paragraphs:
-            full_text= full_text + para.text + "\n"
-        
+            full_text = full_text + para.text + "\n"
         return full_text
+    elif extension == "xlsx":
+        data = pd.read_excel(f.read())
+        row_string = ""
+        for index, row in data.iterrows():
+            # Convert the row to a string
+            row_string = ' '.join([str(cell) for cell in row])
+            # Print the row string
+        print(row_string)
+        return row_string
+    elif extension == 'csv':
+        csv_reader = csv.reader(f.read().decode('utf-8').splitlines())
+        row_string = ""
+        for row in csv_reader:
+            row_string = ' '.join([str(cell) for cell in row])
+
+        print(row_string)
+        return row_string
+
