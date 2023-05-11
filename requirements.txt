@@ -26,3 +26,4 @@ tqdm==4.65.0
 tzdata==2023.3
 urllib3==1.26.15
 yarl==1.9.2
+pandas==2.0.1
