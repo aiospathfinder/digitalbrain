@@ -1,4 +1,4 @@
-How many clowns will it take to juggle this  {INFORMATION} if it were condendesed into book form for this {QUESTION}:
+{INFORMATION} {QUESTION}:
 
 
 QUESTION: <<QS>>
